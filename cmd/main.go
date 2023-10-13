@@ -8,8 +8,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/joho/godotenv"
 	"github.com/shpendbeqiraj2/ari/v6/client/native"
+	"github.com/joho/godotenv"
 	log "github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/writer"
 )

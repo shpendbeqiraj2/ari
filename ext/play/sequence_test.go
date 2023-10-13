@@ -8,8 +8,8 @@ import (
 
 	"github.com/stretchr/testify/mock"
 
-	"github.com/shpendbeqiraj2/ari/v6"
-	"github.com/shpendbeqiraj2/ari/v6/client/arimocks"
+	"github.com/CyCoreSystems/ari/v6"
+	"github.com/CyCoreSystems/ari/v6/client/arimocks"
 )
 
 type sequenceTest struct {

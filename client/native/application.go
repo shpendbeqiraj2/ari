@@ -5,7 +5,7 @@ import (
 
 	"github.com/rotisserie/eris"
 
-	"github.com/shpendbeqiraj2/ari/v6"
+	"github.com/CyCoreSystems/ari/v6"
 )
 
 // Application is a native implementation of ARI's Application functions
