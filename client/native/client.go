@@ -161,6 +161,9 @@ type Client struct {
 	// WSConfig describes the configuration for the websocket connection to Asterisk, from which events will be received.
 	WSConfig *websocket.Config
 
+	// use this websocket connection to send ping events
+	WsConn *websocket.Conn
+
 	// connected is a flag indicating whether the Client is connected to Asterisk
 	connected bool
 
@@ -360,6 +363,8 @@ func (c *Client) listen(ctx context.Context, wg *sync.WaitGroup) {
 			continue
 		}
 
+		c.WsConn = ws
+
 		info, err := c.Asterisk().Info(nil)
 		if err != nil {
 			c.Options.Logger.Error("failed to get info from Asterisk", "error", err)
@@ -400,6 +405,28 @@ func (c *Client) listen(ctx context.Context, wg *sync.WaitGroup) {
 			c.Options.Logger.Debug("failed to close websocket", "error", err)
 		}
 	}
+}
+
+// send a ping to asterisk every few seconds
+func (c *Client) PingAsteriskWebsocket(duration time.Duration) chan error {
+	errChan := make(chan error, 1)
+	go func() {
+		for {
+			// sleep
+			time.Sleep(duration)
+
+			pingCodec := websocket.Codec{Marshal: func(v interface{}) (data []byte, payloadType byte, err error) {
+				return nil, websocket.PingFrame, nil
+			}}
+			if err := pingCodec.Send(c.WsConn, nil); err != nil {
+				// Fail
+				errChan <- eris.Wrap(err, "failed to ping websocket message")
+				return
+			}
+		}
+	}()
+
+	return errChan
 }
 
 // wsRead loops for the duration of a websocket connection,
