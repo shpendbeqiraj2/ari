@@ -3,7 +3,6 @@ module github.com/shpendbeqiraj2/ari/v6
 go 1.20
 
 require (
-	github.com/CyCoreSystems/ari/v6 v6.0.0-20230915201601-bae2e383e942
 	github.com/gogo/protobuf v1.3.2
 	github.com/joho/godotenv v1.5.1
 	github.com/oklog/ulid v1.3.1

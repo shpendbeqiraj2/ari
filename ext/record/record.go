@@ -11,8 +11,8 @@ import (
 	"github.com/rotisserie/eris"
 	"golang.org/x/exp/slog"
 
-	"github.com/CyCoreSystems/ari/v6"
-	"github.com/CyCoreSystems/ari/v6/rid"
+	"github.com/shpendbeqiraj2/ari/v6"
+	"github.com/shpendbeqiraj2/ari/v6/rid"
 )
 
 var (

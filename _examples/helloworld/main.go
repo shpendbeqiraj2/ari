@@ -5,7 +5,7 @@ import (
 
 	"golang.org/x/exp/slog"
 
-	"github.com/CyCoreSystems/ari/v6/client/native"
+	"github.com/shpendbeqiraj2/ari/v6/client/native"
 )
 
 func main() {
