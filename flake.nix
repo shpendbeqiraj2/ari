@@ -14,7 +14,7 @@
         write-mailmap = pkgs.buildGoModule rec {
           name = "write_mailmap";
           src = pkgs.fetchFromGitHub {
-            owner = "CyCoreSystems";
+            owner = "shpendbeqiraj2";
             repo = "write_mailmap";
             rev = "v0.3.0";
             sha256 = "sha256-LzLLEtsWLeIOnlY1pygAOhTsGiWfISnuVF/jeoHHzaw=";
