@@ -42,7 +42,7 @@
           cd $(git rev-parse --show-toplevel)
           write_mailmap > CONTRIBUTORS
           gofumpt -w .
-          gci write --skip-generated -s standard -s default -s "Prefix(github.com/CyCoreSystems)" .
+          gci write --skip-generated -s standard -s default -s "Prefix(github.com/shpendbeqiraj2)" .
           golangci-lint run
           golangci-lint run ./_examples/bridge
           golangci-lint run ./_examples/helloworld
