@@ -161,6 +161,9 @@ type Client struct {
 	// WSConfig describes the configuration for the websocket connection to Asterisk, from which events will be received.
 	WSConfig *websocket.Config
 
+	// wsConnection is the active websocket connection that needs to be always connected, if it disconnects then try to reconnect to Asterisk again
+	wsConnection *websocket.Conn
+
 	// connected is a flag indicating whether the Client is connected to Asterisk
 	connected bool
 
@@ -257,6 +260,28 @@ func (c *Client) StoredRecording() ari.StoredRecording {
 // TextMessage returns the ARI TextMessage accessors for this client
 func (c *Client) TextMessage() ari.TextMessage {
 	return &TextMessage{c}
+}
+
+// Ping asterisk websocket connection periodically
+// returns an error channel that gives an error when a ping fails
+func (c *Client) Ping(duration time.Duration) (errChan chan error) {
+	go func() {
+		for {
+			// sleep
+			time.Sleep(duration)
+
+			pingCodec := websocket.Codec{Marshal: func(v interface{}) (data []byte, payloadType byte, err error) {
+				return nil, websocket.PingFrame, nil
+			}}
+
+			if err := pingCodec.Send(c.wsConnection, nil); err != nil {
+				errChan <- eris.Wrap(err, "failed to ping websocket message")
+				return
+			}
+		}
+	}()
+
+	return errChan
 }
 
 func (c *Client) createWSConfig() (err error) {
@@ -359,6 +384,8 @@ func (c *Client) listen(ctx context.Context, wg *sync.WaitGroup) {
 
 			continue
 		}
+
+		c.wsConnection = ws
 
 		info, err := c.Asterisk().Info(nil)
 		if err != nil {

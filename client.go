@@ -1,6 +1,10 @@
 package ari
 
-import "golang.org/x/exp/slog"
+import (
+	"time"
+
+	"golang.org/x/exp/slog"
+)
 
 // Client represents a set of operations to interact
 // with an Asterisk ARI server.  It is agnostic to transport
@@ -60,4 +64,8 @@ type Client interface {
 
 	// TextMessage accesses the TextMessage ARI namespace
 	TextMessage() TextMessage
+
+	// Ping asterisk websocket connection periodically
+	// returns an error channel that gives an error when a ping fails
+	Ping(duration time.Duration) (errChan chan error)
 }
