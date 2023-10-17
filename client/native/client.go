@@ -279,17 +279,20 @@ func (c *Client) Ping(duration time.Duration) error {
 			errChan <- eris.Wrap(err, "failed to ping websocket message")
 			return
 		}
+
+		// ping sent successfully
+		errChan <- nil
 	}()
 
 	for {
 		select {
 		case <-ctx.Done():
 			if err := ctx.Err(); err != nil {
-				return err // context canceled
+				return err
 			}
-			return errors.New("Timeout!")
+			return errors.New("timeout")
 		case err := <-errChan:
-			return err // some ping error
+			return err
 		}
 	}
 }
