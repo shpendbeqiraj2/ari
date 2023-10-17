@@ -67,5 +67,5 @@ type Client interface {
 
 	// Ping asterisk websocket connection periodically
 	// returns an error channel that gives an error when a ping fails
-	Ping(duration time.Duration) (errChan chan error)
+	Ping(duration time.Duration) error
 }
