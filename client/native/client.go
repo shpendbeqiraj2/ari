@@ -3,7 +3,6 @@ package native
 import (
 	"context"
 	"encoding/base64"
-	"errors"
 	"io"
 	"net/http"
 	"net/url"
@@ -266,35 +265,15 @@ func (c *Client) TextMessage() ari.TextMessage {
 // Ping asterisk websocket connection periodically
 // returns an error channel that gives an error when a ping fails
 func (c *Client) Ping(duration time.Duration) error {
-	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(duration))
-	defer cancel()
-	errChan := make(chan error)
+	pingCodec := websocket.Codec{Marshal: func(v interface{}) (data []byte, payloadType byte, err error) {
+		return nil, websocket.PingFrame, nil
+	}}
 
-	go func() {
-		pingCodec := websocket.Codec{Marshal: func(v interface{}) (data []byte, payloadType byte, err error) {
-			return nil, websocket.PingFrame, nil
-		}}
-
-		if err := pingCodec.Send(c.wsConnection, nil); err != nil {
-			errChan <- eris.Wrap(err, "failed to ping websocket message")
-			return
-		}
-
-		// ping sent successfully
-		errChan <- nil
-	}()
-
-	for {
-		select {
-		case <-ctx.Done():
-			if err := ctx.Err(); err != nil {
-				return err
-			}
-			return errors.New("timeout")
-		case err := <-errChan:
-			return err
-		}
+	if err := pingCodec.Send(c.wsConnection, nil); err != nil {
+		return eris.Wrap(err, "failed to ping websocket message")
 	}
+
+	return nil
 }
 
 func (c *Client) createWSConfig() (err error) {
